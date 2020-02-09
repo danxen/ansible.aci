@@ -1,0 +1,66 @@
+---
+- name: aci deploy epg template
+  hosts: apic
+  connection: local
+  gather_facts: no
+
+#aci deploy a single epg.
+  tasks:
+      - name: aci deploy single epg and associate to bd
+        aci_epg:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: no                
+          state: present
+          tenant: tenant1
+          ap: ap1
+          epg: epg1
+          bd: bd1
+
+#aci deploy a list of epgs and associate to respective bds uscing a list and a dict
+      - name: deploy EPGs and associate to BDs using a dictionary
+        aci_epg:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: no                
+          state: present
+          tenant: tenant1
+          ap: ap1
+          epg: "{{ item.epgs }}"
+          bd: "{{ item.bds }}"
+        with_items: "{{ epg_list }}"
+
+#aci deploy a phy dom to a single epg
+      - name: add a new physical domain to a single epg
+        aci_epg_to_domain:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: no                
+          state: present
+          tenant: tenant1
+          ap: ap1
+          epg: epg1
+          domain: global
+          domain_type: phys
+
+
+#aci deploy a phy dom to a list of epgs using a list/loop
+      - name: add a new physical domain to a list of EPGs
+        aci_epg_to_domain:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: no                
+          state: present
+          tenant: tenant1
+          ap: ap1
+          epg: "{{ item }}"
+          domain: global
+          domain_type: phys
+        with_items: "{{ epgs}}"
+
+
+

@@ -13,7 +13,22 @@ tenants:
 - tenant2
 - tenant3
 
+bds:
+- bd2
+- bd3
 
+epgs:
+- epg2
+- epg3
+
+aps:
+- ap2
+- ap3
+
+epg_list:
+  - {bds: 'bd2', epgs: 'epg2'}
+  - {bds: 'bd3', epgs: 'epg3'}'}
+  
 node_map:
   - {leaf_profiles: 'leaf101', leaf: 'leaf101', node: '101', from: '101', to: '101'}
   - {leaf_profiles: 'leaf102', leaf: 'leaf102', node: '102', from: '102', to: '102'}

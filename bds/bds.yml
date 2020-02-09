@@ -1,0 +1,42 @@
+---
+- name: aci deploy bridge domain template
+  hosts: apic
+  connection: local
+  gather_facts: no
+
+
+#aci deploy a single bridge domain. Settings can be modified, example shows a bd that is flooded.
+  tasks:
+      - name: add multiple bridge domains with loop
+        aci_bd:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: no               
+          state: present
+          tenant: tenant1
+          arp_flooding: yes
+          l2_unknown_unicast: flood
+          enable_routing: no
+          bd: bd1
+          vrf: vrf
+
+
+#aci deploy a list of bridge domains located in the apic.yml file in group_vars. 
+      - name: add multiple bridge domains with loop
+        aci_bd:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: no               
+          state: present
+          tenant: tenant1
+          arp_flooding: yes
+          l2_unknown_unicast: flood
+          enable_routing: no
+          bd: "{{ item }}"
+          vrf: vrf
+        with_items: "{{ bds }}"
+
+
+
