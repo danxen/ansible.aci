@@ -25,6 +25,11 @@ aps:
 - ap2
 - ap3
 
+polgrps:
+- vpc_polgrp2
+- vpc_polgrp3
+
+
 epg_list:
   - {bds: 'bd2', epgs: 'epg2'}
   - {bds: 'bd3', epgs: 'epg3'}'}
@@ -46,3 +51,18 @@ vpc_map:
 pool_bind:
   - {start: '2', stop: '2'}
   - {start: '5', stop: '5'}
+
+static_bind:
+  - {tn: 'tenant1, ap: 'ap1', epg: 'epg1', encap: '2', deploy: 'lazy', mode: 'trunk', type: 'vpc', id: '1', leafs: '101-102', ints: 'vpc_polgrp'}
+  - {tn: 'tenant1, ap: 'ap1', epg: 'epg2', encap: '3', deploy: 'lazy', mode: 'trunk', type: 'vpc', id: '1', leafs: '101-102', ints: 'vpc_polgrp'}
+
+
+intprof_101_map:
+ - {int_prof: 'leaf101', port_sel: 'port10', leafs: 'leaf-101', from: '10', to: '10', pg: '10GB_Policy_Group'}
+ - {int_prof: 'leaf101', port_sel: 'port11', leafs: 'leaf-101', from: '11', to: '11', pg: '10GB_Policy_Group'}
+ - {int_prof: 'leaf101', port_sel: 'port12', leafs: 'leaf-101', from: '12', to: '12', pg: '10GB_Policy_Group'}
+
+intprof_102_map:
+ - {int_prof: 'leaf102', port_sel: 'port10', leafs: 'leaf-102', from: '10', to: '10', pg: '10GB_Policy_Group'}
+ - {int_prof: 'leaf102', port_sel: 'port11', leafs: 'leaf-102', from: '11', to: '11', pg: '10GB_Policy_Group'}
+ - {int_prof: 'leaf102', port_sel: 'port12', leafs: 'leaf-102', from: '12', to: '12', pg: '10GB_Policy_Group'}

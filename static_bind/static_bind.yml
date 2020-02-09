@@ -1,0 +1,29 @@
+---
+- name: aci deploy static bind template
+  hosts: apic
+  connection: local
+  gather_facts: no
+
+#aci deploy epg static binding using a dict located in group vars
+  tasks:
+      - name: deploy current static bind for 7k chassis epgs
+        aci_static_binding_to_epg:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: no  
+          tenant: "{{ item.tn }}"
+          ap: "{{ item.ap }}"
+          epg: "{{ item.epg }}"
+          encap_id: "{{ item.encap }}"
+          deploy_immediacy: "{{ item.deploy }}"
+          interface_mode: "{{ item.mode }}"
+          interface_type: "{{ item.type }}"
+          pod_id: "{{ item.id }}"
+          leafs: "{{ item.leafs }}"
+          interface: "{{ item.ints }}"
+          state: present
+        with_items: "{{ static_bind }}"
+
+
+

@@ -1,0 +1,41 @@
+---
+- name: aci deploy assign ports template
+  hosts: apic
+  connection: local
+  gather_facts: no
+
+#aci deploy port assignment to leaf profiles 101 and 102. 
+  tasks:
+      - name: assign ports to interface profiles for int prof 101
+        aci_access_port_to_interface_policy_leaf_profile:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: no 
+          leaf_interface_profile: "{{ item.int_prof }}"
+          access_port_selector: "{{ item.port_sel }}"
+          leaf_port_blk: "{{ item.leafs }}"
+          interface_type: switch_port
+          from_card: 1
+          from_port: "{{ item.from }}"
+          to_port: "{{ item.to }}"
+          policy_group: "{{ item.pg }}"
+          state: present
+        with_items: "{{ intprof_101_map }}"
+
+      - name: assign ports to interface profiles for int prof 102
+        aci_access_port_to_interface_policy_leaf_profile:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: no 
+          leaf_interface_profile: "{{ item.int_prof }}"
+          access_port_selector: "{{ item.port_sel }}"
+          leaf_port_blk: "{{ item.leafs }}"
+          interface_type: switch_port
+          from_card: 1
+          from_port: "{{ item.from }}"
+          to_port: "{{ item.to }}"
+          policy_group: "{{ item.pg }}"
+          state: present
+        with_items: "{{ intprof_102_map }}"

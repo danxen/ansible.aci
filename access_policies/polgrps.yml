@@ -1,0 +1,51 @@
+---
+- name: aci deploy policy group template
+  hosts: apic
+  connection: local
+  gather_facts: no
+
+#aci deploy policy group for access
+  tasks:
+      - name: aci policy group for access 
+        aci_interface_policy_leaf_policy_group:
+         host: "{{ inventory_hostname }}"
+         username: "{{ username }}"
+         password: "{{ password }}"
+         validate_certs: no 
+         lag_type: leaf
+         policy_group: access_polgrp
+         cdp_policy: cdp_on
+         lldp_policy: lldp_on
+         aep: global
+         state: present
+
+#aci deploy single vpc policy group
+      - name: aci deploy vpc policy group
+        aci_interface_policy_leaf_policy_group:
+         host: "{{ inventory_hostname }}"
+         username: "{{ username }}"
+         password: "{{ password }}"
+         validate_certs: no 
+         lag_type: node
+         policy_group: vpc_polgrp
+         port_channel_policy: lacp-active
+         cdp_policy: cdp_on
+         lldp_policy: lldp_on
+         aep: global
+         state: present
+
+#aci deploy multiple vpc policy groups
+      - name: deploy policy groups for firewall vpc nodes
+        aci_interface_policy_leaf_policy_group:
+         host: "{{ inventory_hostname }}"
+         username: "{{ username }}"
+         password: "{{ password }}"
+         validate_certs: no 
+         lag_type: node
+         policy_group: "{{ item }}"
+         port_channel_policy: lacp-active
+         cdp_policy: cdp_on
+         lldp_policy: lldp_on
+         aep: global
+         state: present
+        with_items: "{{ polgrps }}" 
