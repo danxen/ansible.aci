@@ -17,3 +17,4 @@
 - import_playbook: ./snapshot/snapshot.yml
 # - import_playbook: ./static_bind/static_bind.yml
 # - import_playbook: ./tenant/tenant.yml
+# - import_playbook: ./oob_mgmt/oob_mgmt.yml

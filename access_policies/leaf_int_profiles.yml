@@ -1,0 +1,68 @@
+---
+- name: aci deploy template for leaf and interface profiles
+  hosts: apic
+  connection: local
+  gather_facts: no
+
+
+  tasks:
+
+#Configure aci interface profile with single static value
+      - name: deploy aci interface profile with single static value
+        aci_interface_policy_leaf_profile:
+         host: "{{ inventory_hostname }}"
+         username: "{{ username }}"
+         password: "{{ password }}"
+         validate_certs: no
+         leaf_interface_profile: leaf101
+         state: present
+
+#loop list exist in file named apic located in group_vars
+      - name: deploy aci interface profile using a loop and list
+        aci_interface_policy_leaf_profile:
+         host: "{{ inventory_hostname }}"
+         username: "{{ username }}"
+         password: "{{ password }}"
+         validate_certs: no
+         leaf_interface_profile: "{{ item }}"
+         state: present
+        with_items: "{{ int_prof }}"
+
+#Create switch profiles and asociate interface profiles
+      - name: deploy aci leaf profile using a loop and list
+        aci_switch_policy_leaf_profile:
+         host: "{{ inventory_hostname }}"
+         username: "{{ username }}"
+         password: "{{ password }}"
+         validate_certs: no
+         leaf_profile: "{{ item }}"
+         state: present
+        with_items: "{{ leaf_prof }}"
+
+#Configure leaf node selector to leaf profile
+      - name: deploy aci leaf node selector to leaf profile
+        aci_switch_leaf_selector:
+         host: "{{ inventory_hostname }}"
+         username: "{{ username }}"
+         password: "{{ password }}"
+         validate_certs: no
+         leaf_profile: "{{ item.leaf_profiles }}"
+         leaf:  "{{ item.leaf }}"
+         leaf_node_blk: "{{ item.node }}"
+         from: "{{ item.from }}"
+         to: "{{ item.to }}"
+         state: present
+        with_items: "{{ node_map }}"
+
+#Associate interface profiles to leaf profiles
+      - name: map all interface profiles to all leaf profiles 
+        aci_interface_selector_to_switch_policy_leaf_profile:
+         host: "{{ inventory_hostname }}"
+         username: "{{ username }}"
+         password: "{{ password }}"
+         validate_certs: no
+         leaf_profile: "{{ item.leaf_profiles }}"
+         interface_selector: "{{ item.int_profiles }}"
+         state: present
+        with_items: "{{ leaf_map }}"
+
