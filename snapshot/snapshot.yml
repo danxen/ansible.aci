@@ -1,0 +1,20 @@
+---
+- name: aci deploy snapshot template
+  hosts: apic
+  connection: local
+  gather_facts: no
+
+
+#aci snapshot. 
+
+  tasks:
+  - name: create a snapshot
+    aci_config_snapshot:
+      host: "{{ inventory_hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      validate_certs: no               
+      export_policy: config_backup
+      max_count:  10
+      description: snapshot desc
+      state: present
