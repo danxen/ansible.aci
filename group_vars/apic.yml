@@ -32,13 +32,13 @@ polgrps:
 
 epg_list:
   - {bds: 'bd2', epgs: 'epg2'}
-  - {bds: 'bd3', epgs: 'epg3'}'}
+  - {bds: 'bd3', epgs: 'epg3'}
   
 node_map:
   - {leaf_profiles: 'leaf101', leaf: 'leaf101', node: '101', from: '101', to: '101'}
   - {leaf_profiles: 'leaf102', leaf: 'leaf102', node: '102', from: '102', to: '102'}
 
-
+  
 leaf_map:
   - {int_profiles: 'leaf101', leaf_profiles: 'leaf101'}
   - {int_profiles: 'leaf102', leaf_profiles: 'leaf102'}
