@@ -1,0 +1,44 @@
+---
+- name: aci deploy templatetemplate
+  hosts: apic
+  connection: local
+  gather_facts: no
+
+
+#aci deploy a single tenant with a static value
+  tasks:
+      - name: add a single tenant
+        aci_tenant:
+         host: "{{ inventory_hostname }}"
+         username: "{{ username }}"
+         password: "{{ password }}"
+         validate_certs: no 
+         tenant: tenant1
+         state: present
+
+
+#aci deploy multiple tenants with a a list
+      - name: add tenants with loop
+        aci_tenant:
+         host: "{{ inventory_hostname }}"
+         username: "{{ username }}"
+         password: "{{ password }}"
+         validate_certs: no 
+         tenant: "{{ item }}"
+         state: present
+        with_items: "{{ tenants }}"
+
+
+#aci deploy vrf to tenant
+      - name: add vrf to prod tenant
+        aci_vrf:
+         host: "{{ inventory_hostname }}"
+         username: "{{ username }}"
+         password: "{{ password }}"
+         validate_certs: no 
+         vrf: vrf
+         tenant: tenant1
+         descr: Production vrf
+         policy_control_preference: enforced
+         policy_control_direction: ingress
+         state: present

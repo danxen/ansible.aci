@@ -1,0 +1,122 @@
+---
+- name: aci deploy global resource template
+  hosts: apic
+  connection: local
+  gather_facts: no
+
+
+#aci deploy static vlan pool named global
+  tasks:
+      - name: create global vlan pool
+        aci_vlan_pool:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: no
+          pool: global
+          pool_allocation_mode: static
+          state: present
+
+#aci deploy static vlan range for pool named global
+      - name: configure a range of vlans for global pool
+        aci_encap_pool_range:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: no  
+          pool: global
+          pool_type: vlan
+          pool_allocation_mode: static
+          range_name: global
+          range_start: 10
+          range_end: 20
+          allocation_mode: inherit
+          state: present
+
+#aci deploy discontiguous vlan entries to pool named global usiing a dict 
+      - name: add vlans to global pool
+        aci_encap_pool_range:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: no  
+          pool: global
+          pool_type: vlan
+          pool_allocation_mode: static
+          range_name: global
+          range_start: "{{ item.start }}"
+          range_end: "{{ item.stop }}"
+          allocation_mode: inherit
+          state: present
+        with_items: "{{ pool_bind }}"
+
+#aci deploy physical domain
+      - name: create physical domain 
+        aci_domain: 
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: no  
+          domain: physical
+          domain_type: phys
+          state: present
+
+#aci deploy external domain
+      - name: create external domain 
+        aci_domain:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: no
+          domain: external
+          domain_type: l3dom
+          state: present
+
+#associate global vlan pool to global physical domain
+      - name: associate global physical domain to global vlan pool
+        aci_domain_to_vlan_pool:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: no
+          domain: global
+          domain_type: phys
+          pool: global
+          pool_allocation_mode: static
+          state: present
+
+#associate global vlan pool to external domain
+      - name: associate external domain to global vlan pool
+        aci_domain_to_vlan_pool:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: no
+          domain: external
+          domain_type: l3dom
+          pool: global
+          pool_allocation_mode: static
+          state: present
+
+#aci deploy aep 
+      - name: aci deploy global aep
+        aci_aep:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: no
+          aep: global
+          state: present
+
+#associate aep with global phy dom
+      - name: associate global phy dom with global aep
+        aci_aep_to_domain:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+          validate_certs: no
+          aep: global
+          domain: global
+          domain_type: phys
+          state: present
+

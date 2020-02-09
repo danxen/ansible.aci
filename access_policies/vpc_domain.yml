@@ -1,0 +1,21 @@
+---
+- name: aci deploy vpc protection group template
+  hosts: apic
+  connection: local
+  gather_facts: no
+
+
+#aci vpc protection group for vpc pairs with a dictionary in the apic,yml file located in group_vars
+  tasks:
+      - name: create vPC protection groups for vpc pairings
+        aci_switch_policy_vpc_protection_group:
+         host: "{{ inventory_hostname }}"
+         username: "{{ username }}"
+         password: "{{ password }}"
+         validate_certs: no
+         protection_group: "{{ item.pg }}"
+         protection_group_id: "{{ item.grp_ids }}"
+         switch_1_id: "{{ item.sw1_ids }}"
+         switch_2_id: "{{ item.sw2_ids }}"
+         state: present
+        with_items: "{{ vpc_map }}"
